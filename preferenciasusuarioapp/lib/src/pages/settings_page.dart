@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:preferenciasusuarioapp/src/shared_prefs/preferencias_usuario.dart';
 import 'package:preferenciasusuarioapp/src/widgets/menu_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   static final String routeName = 'settings';
@@ -10,30 +10,24 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _colorSecundario = false;
-  int _genero = 1;
+  bool _colorSecundario;
+  int _genero;
   String _nombre = 'Pedro';
 
   TextEditingController _textEditingController;
 
+  final prefs = new PreferenciasUsuario();
+
   @override
   void initState() {
     super.initState();
-    _cargarPref();
-    _textEditingController = new TextEditingController(text: _nombre);
+    _genero = prefs.genero;
+    _colorSecundario = prefs.colorSecundario;
+    _textEditingController = new TextEditingController(text: prefs.nombre);
   }
 
-  _cargarPref() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _genero = prefs.getInt('genero');
-    });
-  }
-
-  _setSelectedRadio(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.setInt('genero', value);
+  _setSelectedRadio(int value) {
+    prefs.genero = value;
     setState(() {
       _genero = value;
     });
@@ -44,6 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
+          backgroundColor: (prefs.colorSecundario) ? Colors.teal : Colors.blue,
         ),
         drawer: MenuWidget(),
         body: ListView(
@@ -61,6 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (value) {
                 setState(() {
                   _colorSecundario = value;
+                  prefs.colorSecundario = value;
                 });
               },
               title: Text('Color secundario'),
@@ -83,7 +79,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 decoration: InputDecoration(
                     labelText: 'Nombre',
                     helperText: 'Nombre de la persona usando el telefono'),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  prefs.nombre = value;
+                },
               ),
             ),
           ],

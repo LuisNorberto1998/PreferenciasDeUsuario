@@ -13,10 +13,6 @@ class PreferenciasUsuario {
   PreferenciasUsuario._internal();
 
   SharedPreferences _prefs;
-  //Ninguna se usa
-  // bool _colorSecundario;
-  // int _gener;
-  // String _nombre;
 
   initPrefs() async {
     this._prefs = await SharedPreferences.getInstance();
@@ -29,5 +25,23 @@ class PreferenciasUsuario {
 
   set genero(int value) {
     _prefs.setInt('genero', value);
+  }
+
+  //Get And Set colorSecundario
+  get colorSecundario {
+    return _prefs.getBool('colorSecundario') ?? false;
+  }
+
+  set colorSecundario(bool value) {
+    _prefs.setBool('colorSecundario', value);
+  }
+
+  //Get And Set Nombre
+  get nombre {
+    return _prefs.getString('nombreUsuario') ?? '';
+  }
+
+  set nombre(String value) {
+    _prefs.setString('nombreUsuario', value);
   }
 }
